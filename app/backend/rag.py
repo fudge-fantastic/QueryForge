@@ -21,7 +21,7 @@ except Exception as e:
     print(f"Error while loading the model: {e}")
 
 prompt_template = """
-Answer the question based on the context, in a concise manner using bullets where applicable
+Answer the question based on the context, in a neat markdown manner.
 Context: {context}
 Question: {question}
 Answer:

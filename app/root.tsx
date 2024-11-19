@@ -6,8 +6,10 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
+import {NextUIProvider} from "@nextui-org/react";
 
 import "./tailwind.css";
+import NavBar from "./components/NavBar";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -22,7 +24,7 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <head>
@@ -31,10 +33,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+      <body className="min-h-screen">
+        <div className="bg-white text-black dark:bg-black dark:text-white duration-200">
+          <NextUIProvider>
+            <NavBar />
+            {children}
+            <ScrollRestoration />
+            <Scripts />
+          </NextUIProvider>
+        </div>
       </body>
     </html>
   );

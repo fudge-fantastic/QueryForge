@@ -6,12 +6,17 @@ from qdrant_client import QdrantClient, models
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+import warnings
+warnings.filterwarnings("ignore")
 
-dotenv.load_dotenv()
-api_key = os.environ.get("QDRANT_API_KEY")
-url_key = os.environ.get("QDRANT_URL")
-collection_name = os.environ.get("QDRANT_COLLECTION_NAME")
-print("API Key found" if api_key else "API Key not found"); print("URL Key found" if url_key else "URL Key not found") 
+try:
+    dotenv.load_dotenv()
+    api_key = os.environ.get("QDRANT_API_KEY")
+    url_key = os.environ.get("QDRANT_URL")
+    collection_name = os.environ.get("QDRANT_COLLECTION_NAME")
+    print("All API keys loaded successfully") 
+except Exception as e:
+    print(f"An error occured while loading environment variables: {e}")
 
 try:
     client = QdrantClient(url=url_key, api_key=api_key)
@@ -59,10 +64,16 @@ def upload_website(website_url: str):
         try:
             vector_store.add_documents(documents=docs)
             print(f"Successfully added {len(docs)} documents to collection {collection_name}")
+            return {"message": f"Successfully indexed {len(docs)} documents from {website_url}"}
         except Exception as e:
-            print(f"An error occured while adding documents to collection: {e}")
+            error_message = f"An error occurred while adding documents to the collection: {e}"
+            print(error_message)
+            return {"error": error_message}
     except Exception as e:
-        print(f"An error occured while loading website: {e}")
+        error_message = f"An error occurred while loading the website: {e}"
+        print(error_message)
+        return {"error": error_message}
+
 
 # create_collection(collection_name)
 # upload_website("https://research.ibm.com/blog/what-is-generative-AI")
